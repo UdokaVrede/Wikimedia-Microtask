@@ -1,4 +1,4 @@
-import requests,re,os
+import requests,re,os, inspect,importlib
 import matplotlib.pyplot as plt #import modules
 
 #function to get file size
@@ -11,51 +11,77 @@ def getFileSize(path):    #function definition
                 arrFileSize.append(fileSize)
         return arrFileSize
 
+def diction(aDict):
+    for key, va in aDict.items():
+        value = va
+    return value
+
+def fileNaming(part):
+    new = part.split('/')
+    newbase = "".join(new)
+    urlRegex = re.compile(r'^Module:(.*)')
+    urlFind = urlRegex.findall(newbase)
+    for name in urlFind:
+        return name
+
 #get the wikidata for processing
 S = requests.Session()
 
 URL = "https://en.wikipedia.org/w/api.php"
 
 PARAMS = {
-    "action": "opensearch",
+    "action": "query",
     "search":"namespace",
     "sites":"enwiki",
-    "namespace": "828",
-    "format": "json"
+    "apnamespace": "828",
+    "format": "json",
+    "list":"allpages",
+    "aplimit": "6"
 }
-#processing wikidata
-R = S.get(url=URL, params=PARAMS)
-DATA = R.json()
-count=0
-for x in DATA:
-    for n in x:
-        if n != '' and len(n) > 1:
-            #search for urls
-            urlRegex = re.compile(r'^https://(.*)')
-            urlFind = urlRegex.findall(n)
-            #iterate through the retrieved url
-            for i in urlFind:
-                count+=1
-                newUrl = "https://"+i
-                #get the source codes
-                req = requests.get(newUrl)
-                page_source=req.text              
-                page_source=page_source.split('\n')
-                sourcecodes = ' '.join(page_source)
-            #save each url with its corresponding source codes
-                filename = 'sourcefile %s.txt'%(count)
-                header = 'URL: '+ newUrl
-                sourcefile = open(filename,'w')
-                sourcefile.write(header)
-                sourcefile.write("\n++++++++++++++++++++++++++++++\n")
-                sourcefile.write(sourcecodes)
-                sourcefile.close()
+index = 1
 
-#output pictorial data using histogram
-arr = getFileSize('.')
-plt.title('Histogram for source code file sizes')
-plt.hist(arr,bins= 'auto',alpha=0.9,color='blue',edgecolor='black')
-plt.xlabel('file size intervals')
-plt.ylabel('number of files')
-plt.show()
+while index == 1 or PARAMS['apcontinue'] != 'Zh':
+    #processing wikidata
+    R = S.get(url=URL, params=PARAMS)
+    DATA = R.json()
+    count=0
+    v = diction(DATA)
+    if type(v) == dict:
+        w = diction(v)
+        if type(w) == dict:
+            x = diction(w)
+        elif type(w) == list:
+            for at in w:
+                if type(at) is dict:
+                    de = diction(at)
+                    dataUrl = 'https://en.wikipedia.org/wiki/'+de
+                    count+=1
+                    req = requests.get(dataUrl)
+                    page_source=req.text              
+                    page_source=page_source.split('\n')
+                    sourcecodes = ' '.join(page_source)
+                #save each url with its corresponding source codes
+                    newbase = fileNaming(de)
+                    filename = newbase+'.txt'
+                    print(filename)
+                    header = 'URL: '+ dataUrl
+                    if not os.path.exists(filename):
+                        sourcefile = open(filename,'w')
+                        sourcefile.write(header)
+                        sourcefile.write("\n++++++++++++++++++++++++++++++\n")
+                        sourcefile.write(sourcecodes)
+                        sourcefile.close()
+                    else:
+                        raise Exception(filename+' already exists')
+    index=0
+    PARAMS['apcontinue'] = DATA['continue']['apcontinue']
 
+
+    #output pictorial data using histogram
+    arr = getFileSize('.')
+    plt.style.use('dark_background')
+    plt.title('Histogram for source code file sizes')
+    plt.hist(arr,bins= 'auto',alpha=0.9,color='blue',edgecolor='black')
+    plt.xlabel('file size intervals')
+    plt.ylabel('number of files')
+    plt.show()
