@@ -10,12 +10,12 @@ def getFileSize(path):    #function definition
                 fileSize =os.path.getsize(eachFile)
                 arrFileSize.append(fileSize)
         return arrFileSize
-
+#check a dictionar and return its values
 def diction(aDict):
     for key, va in aDict.items():
         value = va
     return value
-
+#file naming
 def fileNaming(part):
     new = part.split('/')
     newbase = "".join(new)
@@ -36,15 +36,17 @@ PARAMS = {
     "apnamespace": "828",
     "format": "json",
     "list":"allpages",
-    "aplimit": "6"
+    "aplimit": "3"
 }
-index = 1
 
+index = 1
+#check for index or params 
 while index == 1 or PARAMS['apcontinue'] != 'Zh':
     #processing wikidata
     R = S.get(url=URL, params=PARAMS)
     DATA = R.json()
     count=0
+    #iterating through to get the data in Module:Namespace
     v = diction(DATA)
     if type(v) == dict:
         w = diction(v)
@@ -54,8 +56,10 @@ while index == 1 or PARAMS['apcontinue'] != 'Zh':
             for at in w:
                 if type(at) is dict:
                     de = diction(at)
+                    #specify url for each module
                     dataUrl = 'https://en.wikipedia.org/wiki/'+de
-                    count+=1
+                    count+=1        #count for number of modules
+                    #get source codes of modules
                     req = requests.get(dataUrl)
                     page_source=req.text              
                     page_source=page_source.split('\n')
@@ -72,7 +76,9 @@ while index == 1 or PARAMS['apcontinue'] != 'Zh':
                         sourcefile.write(sourcecodes)
                         sourcefile.close()
                     else:
+                        #raise exception where file already exists and exit the loop
                         raise Exception(filename+' already exists')
+    #specify the value of index and params for the next iteration               
     index=0
     PARAMS['apcontinue'] = DATA['continue']['apcontinue']
 
@@ -81,7 +87,7 @@ while index == 1 or PARAMS['apcontinue'] != 'Zh':
     arr = getFileSize('.')
     plt.style.use('dark_background')
     plt.title('Histogram for source code file sizes')
-    plt.hist(arr,bins= 'auto',alpha=0.9,color='blue',edgecolor='black')
+    plt.hist(arr,bins= 'auto',alpha=0.4,color='blue',edgecolor='black')
     plt.xlabel('file size intervals')
     plt.ylabel('number of files')
     plt.show()
