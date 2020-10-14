@@ -11,8 +11,8 @@
 - I used these values to plot the histogram in lines 56 - 60 using matplotlib module.
 
 ## TASKS COMPLETED
-- [ ] Write a script that fetches all of the source code on English Wikipedia in the Module: "namespace".
-- [ ] Generate a summary report that includes interesting statistics like number of modules, a histogram of file sizes, and so on.
+- [x] Write a script that fetches all of the source code on English Wikipedia in the Module: "namespace".
+- [x] Generate a summary report that includes interesting statistics like number of modules, a histogram of file sizes, and so on.
 
 ## SUMMARY
 FROM THE DATA DERIVED AND PROCESSED, 
