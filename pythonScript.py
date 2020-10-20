@@ -25,6 +25,19 @@ def getFileData(path: str):    #function definition
         maxi = max(arrFileSize)
         Summ = sum(arrFileSize)
         return arrFileSize
+#check a dictionar and return its values
+def diction(aDict):
+    for key, va in aDict.items():
+        value = va
+    return value
+#file naming
+def fileNaming(part):
+    new = part.split('/')
+    newbase = "".join(new)
+    urlRegex = re.compile(r'^Module:(.*)')
+    urlFind = urlRegex.findall(newbase)
+    for name in urlFind:
+        return name
 
 #get latest module
 def getMaxDetail():
