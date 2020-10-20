@@ -31,9 +31,11 @@ FROM THE DATA DERIVED AND PROCESSED,
     - YOU CAN EITHER RUN THE SCRIPTS AND FETCH SOME SOURCE FILES,THEN PRESS CTRL+C AND EXIT, THEN COMMENT OUT THE LINES 86 - 103, THEN RE-RUN THE SCRIPTS TO VIEW THE DETAILS OF THE FILES CREATED 
     OR
     - CHANGE THE VALUE IN APLIMIT TO YOUR DESIRED NUMBER, THEN COMMENT OUT LINES 105 AND 106, THEN RUN THE SCRIPTS.
+
 #### NOTE:
-    - A file, "fileStat" would be created that contains each text file created and its' corresponding size. If you run this script more than once, you would have to delete that file before re-running the script.
-    - Also, once the text files have been created on initial execution of this script, re-running this script, you would get an error,"File already exists", delete the files and then re-run the scripts.
+
+- A file, "fileStat" would be created that contains each text file created and its' corresponding size. If you run this script more than once, you would have to delete that file before re-running the script.
+- Also, once the text files have been created on initial execution of this script, re-running this script, you would get an error,"File already exists", delete the files and then re-run the scripts.
 
 ## SYSTEM REQUIREMENTS
 - Install matplotlib, re and requests
